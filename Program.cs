@@ -34,10 +34,6 @@ app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
 app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
 
-app.MapGet("/Customer/Read", CustomerFunctions.ReadCustomer);
-app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
-app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
-app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
 
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
 app.MapDelete("/Product/Delete", ProductFunctions.DeleteProduct);
