@@ -1,4 +1,5 @@
 using AdventureWorksApi.Models;
+using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,15 +15,6 @@ builder.Services.AddDbContext<AdventureWorksLt2019Context>(options =>
 
 var app = builder.Build();
 
-/*var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<DbContextName>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContextClassName")));
-
-var app = builder.Build();*/
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,5 +23,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
+app.MapDelete("/Address/Delete", AddressFunctions.DeleteAddress);
+app.MapPut("/Address/Update", AddressFunctions.UpdateAddress);
+app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
 
 app.Run();
