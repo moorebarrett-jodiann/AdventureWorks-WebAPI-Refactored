@@ -1,10 +1,10 @@
 ﻿using AdventureWorksApi.Models;
 
-namespace AdventureWorksApi.Functions
-{
-    public static class AddressFunctions
-    {
 
+namespace AdventureWorksApi.Function
+{
+    public class Address
+    {
         public static IResult CreateAddress(AdventureWorksLt2019Context context, Address address)
         {
             if (context.Addresses.Any(a => a.Rowguid == address.Rowguid))
@@ -91,7 +91,6 @@ namespace AdventureWorksApi.Functions
                 return Results.Ok("The address is successfully deleted.");
             }
         }
-
 
     }
 }
