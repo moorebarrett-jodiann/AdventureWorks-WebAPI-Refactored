@@ -98,37 +98,7 @@ namespace AdventureWorksApi.Functions
             }
         }
 
-        public static IResult CustomerDetails (int CustomerId, AdventureWorksLt2019Context context)
-        {
-            Customer customer = context.Customers.Include(a => a.CustomerAddresses)
-                                    .ThenInclude(b => b.Address)
-                                    .FirstOrDefault(c => c.CustomerId == CustomerId);
-
-            if (customer == null)
-            {
-                return Results.BadRequest("Customer does not exist.");
-            }
-
-            var address = customer.CustomerAddresses.Select(a => a.Address);
-
-
-            var customerAddress = new
-
-            {
-                Customer = customer,
-                Address = address
-
-            };
-
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
-
-            var serializer = JsonSerializer.Serialize(customerAddress, options);
-
-            return Results.Ok(serializer);
-        }
+        
 
         public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
         {
