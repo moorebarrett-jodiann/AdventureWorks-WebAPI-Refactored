@@ -41,19 +41,15 @@ app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
 app.MapGet("/Customer/Details/{CustomerId}", AddressFunctions.CustomerDetails);
 
-app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
-app.MapDelete("/Product/Delete", ProductFunctions.DeleteProduct);
-app.MapPut("/Product/Update", ProductFunctions.UpdateProduct);
+app.MapGet("/Product/Read/{id}?", ProductFunctions.ReadProduct);
+app.MapDelete("/Product/Delete/{id}", ProductFunctions.DeleteProduct);
+app.MapPut("/Product/Update/{id}", ProductFunctions.UpdateProduct);
 app.MapPost("/Product/Create", ProductFunctions.CreateProduct);
+app.MapGet("/Product/Details/{id}", ProductFunctions.Details);
 
-app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
-app.MapDelete("/Order/Delete", OrderFunctions.DeleteOrder);
-app.MapPut("/Order/Update", OrderFunctions.UpdateOrder);
+app.MapGet("/Order/Read/{id}?", OrderFunctions.ReadOrder);
+app.MapDelete("/Order/Delete{id}", OrderFunctions.DeleteOrder);
+app.MapPut("/Order/Update/{id}", OrderFunctions.UpdateOrder);
 app.MapPost("/Order/Create", OrderFunctions.CreateOrder);
-
-
-
-
-
 
 app.Run();
