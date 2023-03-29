@@ -46,14 +46,12 @@ namespace AdventureWorksApi.Functions
         public static IResult UpdateCustomer(AdventureWorksLt2019Context context, int id, Customer updateCustomer)
         {
 
-            Customer customer = context.Customers.Find(id);
+            Customer? customer = context.Customers.Find(id);
             if (customer == null)
             {
-                customer = new Customer();
-
-                context.Customers.Add(customer);
+                context.Customers.Add(updateCustomer);
                 context.SaveChanges();
-                return Results.Ok("Customer is added successful");
+                return Results.Created("/Customers", updateCustomer);
             }
             else
             {
@@ -65,8 +63,8 @@ namespace AdventureWorksApi.Functions
                 customer.EmailAddress = updateCustomer.EmailAddress;
                 customer.Phone = updateCustomer.Phone;
                 customer.Rowguid = updateCustomer.Rowguid;
-
-                return Results.Ok("Customer updated successfully");
+                context.SaveChanges();
+                return Results.Ok(customer);
             }
 
 
