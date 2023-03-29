@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace AdventureWorksApi.Functions
 {
@@ -114,13 +116,37 @@ namespace AdventureWorksApi.Functions
             return context.Customers.Any(e => e.CustomerId == id);
         }
 
-        /*
-         * 
-         public static IResult CustomerAddToAddress(AdventureWorksLt2019Context context, int customerId, int AddressId)
+
+
+        /*public static IResult CustomerAddToAddress(AdventureWorksLt2019Context context, int customerId, int AddressId)
         {
 
+           Customer? customer = context.Customers.Find(customerId);
+           Address? address = context.Addresses.Find(AddressId);
+
+           if (customer == null || address == null)
+           {
+               return Results.NotFound();
+           }
+
+           CustomerAddress customerAddress = new CustomerAddress
+           {
+               CustomerId = customer.CustomerId,
+               AddressId = address.AddressId,
+               AddressType = "Main Office"
+           };
+
+           context.CustomerAddresses.Add(customerAddress);
+           context.SaveChanges();
+
+           return Results.Ok(customerAddress);
+        }*/
+
+
+        public static IResult CustomerAddToAddress(AdventureWorksLt2019Context context, int customerId, int addressId) 
+        {
             Customer? customer = context.Customers.Find(customerId);
-            Address? address = context.Addresses.Find(AddressId);
+            Address? address = context.Addresses.Find(addressId);
 
             if (customer == null || address == null)
             {
@@ -135,12 +161,17 @@ namespace AdventureWorksApi.Functions
             };
 
             context.CustomerAddresses.Add(customerAddress);
-            context.SaveChanges();
 
-            return Results.Ok(customerAddress);
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
 
+            var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
 
+            return Results.Ok(serializer);
         }
-         */
+
+
     }
 }
