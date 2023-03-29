@@ -1,4 +1,5 @@
 using AdventureWorksApi.Models;
+using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,15 +15,6 @@ builder.Services.AddDbContext<AdventureWorksLt2019Context>(options =>
 
 var app = builder.Build();
 
-/*var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<DbContextName>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContextClassName")));
-
-var app = builder.Build();*/
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,5 +23,26 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
+app.MapDelete("/Address/Delete", AddressFunctions.DeleteAddress);
+app.MapPut("/Address/Update", AddressFunctions.UpdateAddress);
+app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
+
+app.MapGet("/Customer/Read", CustomerFunctions.ReadCustomer);
+app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
+app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
+app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
+
+
+app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
+app.MapDelete("/Product/Delete", ProductFunctions.DeleteProduct);
+app.MapPut("/Product/Update", ProductFunctions.UpdateProduct);
+app.MapPost("/Product/Create", ProductFunctions.CreateProduct);
+
+app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
+app.MapDelete("/Order/Delete", OrderFunctions.DeleteOrder);
+app.MapPut("/Order/Update", OrderFunctions.UpdateOrder);
+app.MapPost("/Order/Create", OrderFunctions.CreateOrder);
 
 app.Run();
