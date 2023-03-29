@@ -46,8 +46,7 @@ public partial class AdventureWorksLt2019Context : DbContext
     public virtual DbSet<VProductModelCatalogDescription> VProductModelCatalogDescriptions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Database=AdventureWorksLT2019;Integrated Security=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=localhost\\sqlexpress;Initial Catalog=AdventureWorksLT2019;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -301,9 +300,9 @@ public partial class AdventureWorksLt2019Context : DbContext
                 .HasComment("Product weight.")
                 .HasColumnType("decimal(8, 2)");
 
-            entity.HasOne(d => d.ProductCategory).WithMany(p => p.Products).HasForeignKey(d => d.ProductCategoryId);
+            entity.HasOne(d => d.ProductCategory).WithMany(p => p.Products).HasForeignKey(d => d.ProductCategoryId).OnDelete(DeleteBehavior.ClientCascade);
 
-            entity.HasOne(d => d.ProductModel).WithMany(p => p.Products).HasForeignKey(d => d.ProductModelId);
+            entity.HasOne(d => d.ProductModel).WithMany(p => p.Products).HasForeignKey(d => d.ProductModelId).OnDelete(DeleteBehavior.ClientCascade);
         });
 
         modelBuilder.Entity<ProductCategory>(entity =>
@@ -467,7 +466,7 @@ public partial class AdventureWorksLt2019Context : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.SalesOrderDetails)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             entity.HasOne(d => d.SalesOrder).WithMany(p => p.SalesOrderDetails).HasForeignKey(d => d.SalesOrderId);
         });
