@@ -36,7 +36,6 @@ app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
 app.MapGet("/Customer/Details/{CustomerId}", AddressFunctions.CustomerDetails);
 app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
-
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
 app.MapDelete("/Product/Delete", ProductFunctions.DeleteProduct);
 app.MapPut("/Product/Update", ProductFunctions.UpdateProduct);
