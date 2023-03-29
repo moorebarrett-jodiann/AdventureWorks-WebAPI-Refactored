@@ -23,7 +23,7 @@ namespace AdventureWorksApi.Functions
 
         public static IResult ReadProduct(AdventureWorksLt2019Context context, int? id)
         {
-            if (id == null || id == -1)
+            if (id == null)
             {
                 return Results.Ok(context.Products.ToList());
             }
@@ -44,12 +44,12 @@ namespace AdventureWorksApi.Functions
         {
             Product? product = context.Products.Find(id);
 
-            inputProduct.Rowguid = Guid.NewGuid();
+            
             inputProduct.ThumbNailPhoto = null;
             if (product == null)
             {
-                
-                
+
+                inputProduct.Rowguid = Guid.NewGuid();
                 context.Products.Add(inputProduct);
                 context.SaveChanges();
 
@@ -71,7 +71,6 @@ namespace AdventureWorksApi.Functions
             product.DiscontinuedDate= inputProduct.DiscontinuedDate;
             product.ThumbNailPhoto= inputProduct.ThumbNailPhoto;
             product.ThumbnailPhotoFileName= inputProduct.ThumbnailPhotoFileName;
-            product.Rowguid = inputProduct.Rowguid;
             product.ModifiedDate = DateTime.Now;
 
 
