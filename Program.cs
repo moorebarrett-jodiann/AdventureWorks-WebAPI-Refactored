@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +33,8 @@ app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
 app.MapDelete("/Address/Delete", AddressFunctions.DeleteAddress);
 app.MapPut("/Address/Update", AddressFunctions.UpdateAddress);
 app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
-
-app.MapGet("/Customer/Read", CustomerFunctions.ReadCustomer);
-app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
-app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
-app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
+app.MapGet("/Customer/Details/{CustomerId}", AddressFunctions.CustomerDetails);
+app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
 
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
@@ -49,104 +47,7 @@ app.MapDelete("/Order/Delete", OrderFunctions.DeleteOrder);
 app.MapPut("/Order/Update", OrderFunctions.UpdateOrder);
 app.MapPost("/Order/Create", OrderFunctions.CreateOrder);
 
-//Customer/Details<PrimaryKey> and Address/Details<PrimaryKey> should also list their related
-//Customers/Addresses using the CustomerAddress middle table in the returned JSON.
 
-app.MapGet("/Customer/Details/{CustomerId}", (int CustomerId, AdventureWorksLt2019Context db) =>
-{
-    Customer customer = db.Customers.Include(a => a.CustomerAddresses)
-                                    .ThenInclude(b => b.Address)
-                                    .FirstOrDefault(c => c.CustomerId == CustomerId);
-
-
-    if (customer == null)
-    {
-        return Results.BadRequest("Customer does not exist.");
-    }
-
-    var address = customer.CustomerAddresses.Select(a => a.Address);
-
-
-    var customerAddress = new
-
-    {
-        Customer = customer,
-        Address = address
-
-    };
-
-    var options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
-
-    var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
-
-    return Results.Ok(serializer);
-});
-
-app.MapGet("/Address/Details/{AddressId}", (int AddressId, AdventureWorksLt2019Context db) =>
-{
-
-    Address address = db.Addresses.Include(a => a.CustomerAddresses)
-                                  .ThenInclude(b => b.Customer)
-                                  .FirstOrDefault(c => c.AddressId == AddressId);
-
-    if (address == null)
-    {
-        return Results.BadRequest("Address does not exist.");
-    }
-
-
-    var customer = address.CustomerAddresses.Select(a => a.Customer);
-
-
-    var customerAddress = new
-
-    { 
-        Address = address,
-        Customer = customer
-    };
-
-    var options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
-
-    var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
-
-    return Results.Ok(serializer);
-});
-
-app.MapPost("/Customer/AddToAddress", (int customerId, int addressId, AdventureWorksLt2019Context db) =>
-{
-    Customer customer = db.Customers.Find(customerId);
-    Address address = db.Addresses.Find(addressId);
-
-    if (customer == null || address == null)
-    {
-        return Results.NotFound();
-    }
-
-    CustomerAddress customerAddress = new CustomerAddress
-    {
-        CustomerId = customer.CustomerId,
-        AddressId = address.AddressId,
-        AddressType = "Main Office"
-    };
-
-    db.CustomerAddresses.Add(customerAddress);
-    
-
-    var options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
-
-    var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
-
-    return Results.Ok(serializer);
-});
 
 
 
