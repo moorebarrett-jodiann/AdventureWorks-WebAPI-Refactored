@@ -1,6 +1,7 @@
 using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
