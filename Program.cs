@@ -2,8 +2,10 @@ using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text;
 using System.Net;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +17,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AdventureWorksLt2019Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AdventureWorksLt2019Context"))
 );
-
-
-
 
 var app = builder.Build();
 
@@ -34,11 +33,13 @@ app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
 app.MapDelete("/Address/Delete", AddressFunctions.DeleteAddress);
 app.MapPut("/Address/Update", AddressFunctions.UpdateAddress);
 app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
+app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
 app.MapGet("/Customer/Read", CustomerFunctions.ReadCustomer);
 app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
 app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
+app.MapGet("/Customer/Details/{CustomerId}", AddressFunctions.CustomerDetails);
 
 app.MapGet("/Product/Read/{id}?", ProductFunctions.ReadProduct);
 app.MapDelete("/Product/Delete/{id}", ProductFunctions.DeleteProduct);
