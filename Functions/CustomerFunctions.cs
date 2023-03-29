@@ -114,6 +114,33 @@ namespace AdventureWorksApi.Functions
             return context.Customers.Any(e => e.CustomerId == id);
         }
 
+        /*
+         * 
+         public static IResult CustomerAddToAddress(AdventureWorksLt2019Context context, int customerId, int AddressId)
+        {
 
+            Customer? customer = context.Customers.Find(customerId);
+            Address? address = context.Addresses.Find(AddressId);
+
+            if (customer == null || address == null)
+            {
+                return Results.NotFound();
+            }
+
+            CustomerAddress customerAddress = new CustomerAddress
+            {
+                CustomerId = customer.CustomerId,
+                AddressId = address.AddressId,
+                AddressType = "Main Office"
+            };
+
+            context.CustomerAddresses.Add(customerAddress);
+            context.SaveChanges();
+
+            return Results.Ok(customerAddress);
+
+
+        }
+         */
     }
 }

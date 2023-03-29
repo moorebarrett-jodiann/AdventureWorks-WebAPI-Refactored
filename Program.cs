@@ -2,6 +2,7 @@ using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,5 +45,34 @@ app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
 app.MapDelete("/Order/Delete", OrderFunctions.DeleteOrder);
 app.MapPut("/Order/Update", OrderFunctions.UpdateOrder);
 app.MapPost("/Order/Create", OrderFunctions.CreateOrder);
+
+app.MapPost("/Customer/AddToAddress", (int customerId, int addressId, AdventureWorksLt2019Context db) =>
+{
+    Customer customer = db.Customers.Find(customerId);
+    Address address = db.Addresses.Find(addressId);
+
+    if (customer == null || address == null)
+    {
+        return Results.NotFound();
+    }
+
+    CustomerAddress customerAddress = new CustomerAddress
+    {
+        CustomerId = customer.CustomerId,
+        AddressId = address.AddressId,
+        AddressType = "Main Office"
+    };
+
+    db.CustomerAddresses.Add(customerAddress);
+
+    var options = new JsonSerializerOptions
+    {
+        ReferenceHandler = ReferenceHandler.Preserve
+    };
+
+    var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
+
+    return Results.Ok(serializer);
+});
 
 app.Run();
