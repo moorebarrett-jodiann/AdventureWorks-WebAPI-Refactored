@@ -25,7 +25,7 @@ namespace AdventureWorksApi.Functions
 
             if (order == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
                
             return Results.Ok(order);
@@ -81,7 +81,7 @@ namespace AdventureWorksApi.Functions
             }
             else
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
         }
     }

@@ -34,7 +34,7 @@ namespace AdventureWorksApi.Functions
 
             if (address == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
             
             return Results.Ok(address);
@@ -85,7 +85,7 @@ namespace AdventureWorksApi.Functions
                 return Results.Ok(address);
             } else
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
             
         }
@@ -116,7 +116,7 @@ namespace AdventureWorksApi.Functions
 
             if (address == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             };
 
             return Results.Json(address, new JsonSerializerOptions

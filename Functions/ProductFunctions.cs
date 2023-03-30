@@ -30,7 +30,7 @@ namespace AdventureWorksApi.Functions
 
             if (product == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             } 
                
             return Results.Ok(product);
@@ -85,7 +85,7 @@ namespace AdventureWorksApi.Functions
                 return Results.Ok(product);
             } 
 
-            return Results.NotFound();
+            return Results.BadRequest();
             
         }
 
@@ -102,7 +102,7 @@ namespace AdventureWorksApi.Functions
 
             if (product == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
 
             string? description = null;
