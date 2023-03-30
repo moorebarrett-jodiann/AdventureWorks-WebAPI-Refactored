@@ -67,24 +67,27 @@ namespace AdventureWorksApi.Functions
 
         public static IResult DeleteAddress(int AddressId, AdventureWorksLt2019Context context)
         {
-            Address? address = context.Addresses.Find(AddressId);
+            bool hasReference = context.CustomerAddresses.Any(ca => ca.AddressId == AddressId);
 
-            if (address == null)
+            if (hasReference)
+            {
+                List<CustomerAddress> references = context.CustomerAddresses.Where(ca => ca.AddressId == AddressId).ToList();
+                context.CustomerAddresses.RemoveRange(references);
+            }
+
+
+            Address? address = context.Addresses.FirstOrDefault(a => a.AddressId == AddressId);
+
+            if (address != null)
+            {
+                context.Addresses.Remove(address);
+                context.SaveChanges();
+                return Results.Ok(address);
+            } else
             {
                 return Results.NotFound();
             }
             
-            IQueryable<CustomerAddress> relatedCustomerAddresses = context.CustomerAddresses.Where(ca => ca.AddressId == AddressId);
-
-            foreach (CustomerAddress customerAddress in relatedCustomerAddresses)
-            {
-                context.CustomerAddresses.Remove(customerAddress);
-            }
-
-            context.Addresses.Remove(address);
-            context.SaveChanges();
-
-            return Results.Ok(address);
         }
 
         public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
