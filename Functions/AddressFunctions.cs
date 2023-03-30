@@ -1,4 +1,10 @@
-﻿using AdventureWorksApi.Models;
+using AdventureWorksApi.Models;
+using AdventureWorksApi.Functions;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text;
+using System.Net;
+using System.Text.Json.Serialization;
 
 namespace AdventureWorksApi.Functions
 {
@@ -90,6 +96,44 @@ namespace AdventureWorksApi.Functions
 
                 return Results.Ok("The address is successfully deleted.");
             }
+        }
+
+        public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
+        {
+            var address = context.Addresses.Where(a => a.AddressId == AddressId).Select(b => new
+            {
+                b.AddressId,
+                b.AddressLine1,
+                b.AddressLine2,
+                b.City,
+                b.StateProvince,
+                b.CountryRegion,
+                b.PostalCode,
+                b.Rowguid,
+                Customer = b.CustomerAddresses.Select(c => new
+                {
+                    c.Customer.CustomerId,
+                    c.Customer.FirstName,
+                    c.Customer.LastName,
+                    c.Customer.Phone,
+                    c.Customer.EmailAddress,
+                    c.Customer.CompanyName,
+                    c.Customer.Rowguid
+                }).ToList()
+            }).FirstOrDefault();
+
+            if (address == null)
+            {
+                return Results.BadRequest("Address does not exist.");
+            };
+
+            string serializer = JsonSerializer.Serialize(address, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                IncludeFields = true
+            });
+
+            return Results.Ok(serializer);
         }
 
 

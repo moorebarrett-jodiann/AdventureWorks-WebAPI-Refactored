@@ -2,7 +2,10 @@ using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text;
+using System.Net;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,25 +29,28 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
-app.MapDelete("/Address/Delete", AddressFunctions.DeleteAddress);
-app.MapPut("/Address/Update", AddressFunctions.UpdateAddress);
+app.MapDelete("/Address/Delete/{id}", AddressFunctions.DeleteAddress);
+app.MapPut("/Address/Update/{id}", AddressFunctions.UpdateAddress);
 app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
+app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
 app.MapGet("/Customer/Read", CustomerFunctions.ReadCustomer);
-app.MapDelete("/Customer/Delete", CustomerFunctions.DeleteCustomer);
-app.MapPut("/Customer/Update", CustomerFunctions.UpdateCustomer);
+app.MapDelete("/Customer/Delete/{id}", CustomerFunctions.DeleteCustomer);
+app.MapPut("/Customer/Update/{id}", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
-
+app.MapGet("/Customer/Details/{CustomerId}", CustomerFunctions.CustomerDetails);
 app.MapPost("/Customer/AddAddress", CustomerFunctions.CustomerAddToAddress); 
 
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
-app.MapDelete("/Product/Delete", ProductFunctions.DeleteProduct);
-app.MapPut("/Product/Update", ProductFunctions.UpdateProduct);
+app.MapDelete("/Product/Delete/{id}", ProductFunctions.DeleteProduct);
+app.MapPut("/Product/Update/{id}", ProductFunctions.UpdateProduct);
 app.MapPost("/Product/Create", ProductFunctions.CreateProduct);
+app.MapGet("/Product/Details/{id}", ProductFunctions.Details);
+
 
 app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
-app.MapDelete("/Order/Delete", OrderFunctions.DeleteOrder);
-app.MapPut("/Order/Update", OrderFunctions.UpdateOrder);
+app.MapDelete("/Order/Delete/{id}", OrderFunctions.DeleteOrder);
+app.MapPut("/Order/Update/{id}", OrderFunctions.UpdateOrder);
 app.MapPost("/Order/Create", OrderFunctions.CreateOrder);
 
 app.Run();

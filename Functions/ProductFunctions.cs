@@ -10,6 +10,7 @@ namespace AdventureWorksApi.Functions
     public static class ProductFunctions
     {
 
+
         public static IResult CreateProduct(AdventureWorksLt2019Context context, Product product)
         {
             product.Rowguid = Guid.NewGuid();
@@ -23,7 +24,7 @@ namespace AdventureWorksApi.Functions
 
         public static IResult ReadProduct(AdventureWorksLt2019Context context, int? id)
         {
-            if (id == null || id == -1)
+            if (id == null)
             {
                 return Results.Ok(context.Products.ToList());
             }
@@ -40,16 +41,16 @@ namespace AdventureWorksApi.Functions
                 
         }
 
-        public static IResult UpdateProduct(AdventureWorksLt2019Context context, int id, Product inputProduct)
+        public static IResult UpdateProduct( int id, Product inputProduct, AdventureWorksLt2019Context context)
         {
             Product? product = context.Products.Find(id);
 
-            inputProduct.Rowguid = Guid.NewGuid();
+            
             inputProduct.ThumbNailPhoto = null;
             if (product == null)
             {
-                
-                
+
+                inputProduct.Rowguid = Guid.NewGuid();
                 context.Products.Add(inputProduct);
                 context.SaveChanges();
 
@@ -71,7 +72,6 @@ namespace AdventureWorksApi.Functions
             product.DiscontinuedDate= inputProduct.DiscontinuedDate;
             product.ThumbNailPhoto= inputProduct.ThumbNailPhoto;
             product.ThumbnailPhotoFileName= inputProduct.ThumbnailPhotoFileName;
-            product.Rowguid = inputProduct.Rowguid;
             product.ModifiedDate = DateTime.Now;
 
 
@@ -103,6 +103,61 @@ namespace AdventureWorksApi.Functions
             {
                 return Results.NotFound();
             }
+        }
+
+        public static IResult Details(int id, AdventureWorksLt2019Context context)
+        {
+            Product? product = null;
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
+                 product = context.Products
+                .Include(p => p.ProductCategory).ThenInclude(pc => pc.ParentProductCategory)
+                .Include(p => p.ProductModel).ThenInclude(pm => pm.ProductModelProductDescriptions)
+                .ThenInclude(d => d.ProductDescription)
+                .FirstOrDefault(p => p.ProductId == id);
+
+
+            if (product == null)
+            {
+                return Results.NotFound();
+            }
+
+            string? description = null;
+
+
+            ProductModelProductDescription? relationalObject = product.ProductModel.ProductModelProductDescriptions.FirstOrDefault(d => d.Culture.Trim() == "en");
+
+            if(relationalObject != null)
+            {
+                description = context.ProductDescriptions.Find(relationalObject.ProductDescriptionId).Description;
+            }
+
+            if (description == null)
+            {
+                description = "na";
+            }
+
+
+            return Results.Json(new {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                ProductNumber = product.ProductNumber,
+                Color = product.Color,
+                StandardCost = product.StandardCost,
+                ListPrice = product.ListPrice,
+                Size = product.Size,
+                Weight = product.Weight,
+                
+                ProductCategory = product.ProductCategory.Name,
+                ParentCategory = product.ProductCategory.ParentProductCategory.Name,
+
+                ProductModel = product.ProductModel.Name,
+                Description = description
+
+            }
+            , options) ;
         }
     }
 }
