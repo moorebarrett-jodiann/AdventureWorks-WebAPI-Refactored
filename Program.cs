@@ -28,7 +28,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
 app.MapDelete("/Address/Delete/{id}", AddressFunctions.DeleteAddress);
 app.MapPut("/Address/Update/{id}", AddressFunctions.UpdateAddress);
@@ -40,6 +39,7 @@ app.MapDelete("/Customer/Delete/{id}", CustomerFunctions.DeleteCustomer);
 app.MapPut("/Customer/Update/{id}", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
 app.MapGet("/Customer/Details/{CustomerId}", CustomerFunctions.CustomerDetails);
+app.MapPost("/Customer/AddAddress", CustomerFunctions.CustomerAddToAddress); 
 
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
 app.MapDelete("/Product/Delete/{id}", ProductFunctions.DeleteProduct);

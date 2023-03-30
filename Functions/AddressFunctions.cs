@@ -31,7 +31,7 @@ namespace AdventureWorksApi.Functions
                 return Results.Ok(context.Addresses.ToList());
             }
 
-            Address address = context.Addresses.FirstOrDefault(a => a.AddressId == id);
+            Address? address = context.Addresses.FirstOrDefault(a => a.AddressId == id);
 
             if (address == null)
             {
@@ -47,7 +47,7 @@ namespace AdventureWorksApi.Functions
 
         public static IResult UpdateAddress(int AddressId, AdventureWorksLt2019Context context, Address updatedAddress)
         {
-            Address address = context.Addresses.Find(AddressId);
+            Address? address = context.Addresses.Find(AddressId);
             if (address == null)
             {
                 address = new Address();

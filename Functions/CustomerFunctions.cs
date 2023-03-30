@@ -68,32 +68,6 @@ namespace AdventureWorksApi.Functions
                 context.SaveChanges();
                 return Results.Ok(customer);
             }
-
-
-            /*if (id != customer.CustomerId)
-            {
-                return Results.BadRequest();
-            }
-
-            context.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(context, id))
-                {
-                    return Results.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-           return Results.NoContent();*/
         }
             
         public static IResult DeleteCustomer(AdventureWorksLt2019Context context, int id)
@@ -155,7 +129,47 @@ namespace AdventureWorksApi.Functions
         {
             return context.Customers.Any(e => e.CustomerId == id);
         }
+        public static IResult CustomerAddToAddress(AdventureWorksLt2019Context db, int customerId, int addressId)
+        {
+            Customer selectedCustomer = db.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            Address address = db.Addresses.FirstOrDefault(a => a.AddressId == addressId);
 
+            if (selectedCustomer == null)
+            {
+                return Results.NotFound($"Customer of {customerId} was not found");
+            }
+
+            if (address == null)
+            {
+                return Results.NotFound($"Address of {addressId} was not found");
+            }
+
+            if (db.CustomerAddresses.Any(ca => ca.CustomerId == customerId && ca.AddressId == addressId))
+            {
+                return Results.BadRequest($"ERROR: customerId: {customerId} already on address {addressId}");
+            }
+
+            CustomerAddress customerAddress = new CustomerAddress
+            {
+                CustomerId = selectedCustomer.CustomerId,
+                AddressId = address.AddressId,
+                AddressType = "Main Office",
+                Rowguid = Guid.NewGuid(),
+                ModifiedDate = DateTime.Now
+            };
+
+            db.CustomerAddresses.Add(customerAddress);
+            db.SaveChanges();
+
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
+
+            var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
+
+            return Results.Ok(serializer);
+        }
 
     }
 }
