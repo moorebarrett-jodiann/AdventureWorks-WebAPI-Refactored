@@ -35,7 +35,7 @@ namespace AdventureWorksApi.Functions
 
             if (customer == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }else
             {
                 return Results.Ok(customer);
@@ -78,7 +78,7 @@ namespace AdventureWorksApi.Functions
 
             if (customer == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
 
             context.Customers.Remove(customer);
@@ -115,7 +115,7 @@ namespace AdventureWorksApi.Functions
 
             if (customer == null)
             {
-                return Results.NotFound();
+                return Results.BadRequest();
             }
 
             return Results.Json(customer, new JsonSerializerOptions
@@ -133,12 +133,12 @@ namespace AdventureWorksApi.Functions
 
             if (selectedCustomer == null)
             {
-                return Results.NotFound($"Customer of {customerId} was not found");
+                return Results.BadRequest($"Customer of {customerId} was not found");
             }
 
             if (address == null)
             {
-                return Results.NotFound($"Address of {addressId} was not found");
+                return Results.BadRequest($"Address of {addressId} was not found");
             }
 
             if (db.CustomerAddresses.Any(ca => ca.CustomerId == customerId && ca.AddressId == addressId))
