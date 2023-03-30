@@ -113,32 +113,40 @@ namespace AdventureWorksApi.Functions
 
         public static IResult CustomerDetails(int CustomerId, AdventureWorksLt2019Context context)
         {
-            Customer customer = context.Customers.Include(a => a.CustomerAddresses)
-                                    .ThenInclude(b => b.Address)
-                                    .FirstOrDefault(c => c.CustomerId == CustomerId);
+            var customer = context.Customers.Where(a => a.CustomerId == CustomerId).Select(b => new
+            {
+                b.CustomerId,
+                b.Title,
+                b.FirstName,
+                b.MiddleName,
+                b.LastName,
+                b.CompanyName,
+                b.SalesPerson,
+                b.EmailAddress,
+                b.Phone,
+                Address = b.CustomerAddresses.Select(c => new
+                {
+                    c.Address.AddressId,
+                    c.Address.AddressLine1,
+                    c.Address.AddressLine2,
+                    c.Address.City,
+                    c.Address.StateProvince,
+                    c.Address.CountryRegion,
+                    c.Address.PostalCode,
+                    c.Address.Rowguid
+                }).ToList()
+            }).FirstOrDefault();
 
             if (customer == null)
             {
                 return Results.BadRequest("Customer does not exist.");
             }
 
-            var address = customer.CustomerAddresses.Select(a => a.Address);
-
-
-            var customerAddress = new
-
+            string serializer = JsonSerializer.Serialize(customer, new JsonSerializerOptions
             {
-                Customer = customer,
-                Address = address
-
-            };
-
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
-
-            var serializer = JsonSerializer.Serialize(customerAddress, options);
+                ReferenceHandler = ReferenceHandler.Preserve,
+                IncludeFields = true
+            });
 
             return Results.Ok(serializer);
         }
