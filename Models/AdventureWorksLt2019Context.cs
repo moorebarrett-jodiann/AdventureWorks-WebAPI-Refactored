@@ -46,8 +46,6 @@ public partial class AdventureWorksLt2019Context : DbContext
     public virtual DbSet<VProductModelCatalogDescription> VProductModelCatalogDescriptions { get; set; }
 
     
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=AdventureWorksLT2019;Integrated Security=True;TrustServerCertificate=True;");
 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

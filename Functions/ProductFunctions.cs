@@ -9,8 +9,6 @@ namespace AdventureWorksApi.Functions
 {
     public static class ProductFunctions
     {
-
-
         public static IResult CreateProduct(AdventureWorksLt2019Context context, Product product)
         {
             product.Rowguid = Guid.NewGuid();
@@ -18,8 +16,7 @@ namespace AdventureWorksApi.Functions
             context.Products.Add(product);
             context.SaveChanges();
 
-            return Results.Created($"/Products", product);
-
+            return Results.Created($"/Product/Read", product);
         }
 
         public static IResult ReadProduct(AdventureWorksLt2019Context context, int? id)
@@ -34,29 +31,24 @@ namespace AdventureWorksApi.Functions
             if (product == null)
             {
                 return Results.NotFound();
-            } else
-            {
-                return Results.Ok(product);
-            }
-                
+            } 
+               
+            return Results.Ok(product);
         }
 
         public static IResult UpdateProduct( int id, Product inputProduct, AdventureWorksLt2019Context context)
         {
             Product? product = context.Products.Find(id);
-
             
             inputProduct.ThumbNailPhoto = null;
             if (product == null)
             {
-
                 inputProduct.Rowguid = Guid.NewGuid();
                 context.Products.Add(inputProduct);
                 context.SaveChanges();
 
                 return Results.Created($"/Products", inputProduct);
             }
-
             
             product.Name = inputProduct.Name;
             product.ProductNumber = inputProduct.ProductNumber;
@@ -74,13 +66,6 @@ namespace AdventureWorksApi.Functions
             product.ThumbnailPhotoFileName= inputProduct.ThumbnailPhotoFileName;
             product.ModifiedDate = DateTime.Now;
 
-
-
-                /*
-            var jsonString = JsonSerializer.Serialize(inputProduct);
-            
-            product = JsonSerializer.Deserialize<Product>(jsonString);
-                */
             context.SaveChanges();
 
             return Results.Ok(context.Products.Find(product.ProductId));
@@ -89,7 +74,6 @@ namespace AdventureWorksApi.Functions
 
         public static IResult DeleteProduct(AdventureWorksLt2019Context context, int id)
         {
-            
             Product? product = context.Products
                 .Include(p => p.SalesOrderDetails)
                 .FirstOrDefault(p => p.ProductId == id);
@@ -99,19 +83,16 @@ namespace AdventureWorksApi.Functions
                 context.Products.Remove(product);
                 context.SaveChanges();
                 return Results.Ok(product);
-            } else
-            {
-                return Results.NotFound();
-            }
+            } 
+
+            return Results.NotFound();
+            
         }
 
         public static IResult Details(int id, AdventureWorksLt2019Context context)
         {
             Product? product = null;
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
+            
                  product = context.Products
                 .Include(p => p.ProductCategory).ThenInclude(pc => pc.ParentProductCategory)
                 .Include(p => p.ProductModel).ThenInclude(pm => pm.ProductModelProductDescriptions)
@@ -139,6 +120,10 @@ namespace AdventureWorksApi.Functions
                 description = "na";
             }
 
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
 
             return Results.Json(new {
                 ProductId = product.ProductId,
@@ -155,7 +140,6 @@ namespace AdventureWorksApi.Functions
 
                 ProductModel = product.ProductModel.Name,
                 Description = description
-
             }
             , options) ;
         }
