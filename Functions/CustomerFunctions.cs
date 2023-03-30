@@ -113,16 +113,14 @@ namespace AdventureWorksApi.Functions
 
             if (customer == null)
             {
-                return Results.BadRequest("Customer does not exist.");
+                return Results.NotFound();
             }
 
-            string serializer = JsonSerializer.Serialize(customer, new JsonSerializerOptions
+            return Results.Json(customer, new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve,
                 IncludeFields = true
             });
-
-            return Results.Ok(serializer);
         }
 
         private static bool CustomerExists(AdventureWorksLt2019Context context, int id)
