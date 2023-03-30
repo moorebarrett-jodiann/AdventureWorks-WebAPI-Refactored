@@ -29,8 +29,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
-app.MapDelete("/Address/Delete/{id}", AddressFunctions.DeleteAddress);
-app.MapPut("/Address/Update/{id}", AddressFunctions.UpdateAddress);
+app.MapDelete("/Address/Delete/{AddressId}", AddressFunctions.DeleteAddress);
+app.MapPut("/Address/Update/{AddressId}", AddressFunctions.UpdateAddress);
 app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
 app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
