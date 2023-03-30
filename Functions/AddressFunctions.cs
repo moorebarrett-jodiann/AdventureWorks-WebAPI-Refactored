@@ -10,7 +10,6 @@ namespace AdventureWorksApi.Functions
 {
     public static class AddressFunctions
     {
-
         public static IResult CreateAddress(AdventureWorksLt2019Context context, Address address)
         {
             if (context.Addresses.Any(a => a.Rowguid == address.Rowguid))
@@ -21,7 +20,7 @@ namespace AdventureWorksApi.Functions
             context.Addresses.Add(address);
             context.SaveChanges();
 
-            return Results.Created($"/Addresses", address);
+            return Results.Created($"/Address", address);
         }
 
         public static IResult ReadAddress(AdventureWorksLt2019Context context, int? id)
@@ -37,65 +36,55 @@ namespace AdventureWorksApi.Functions
             {
                 return Results.NotFound();
             }
-            else
-            {
-                return Results.Ok(address);
-            };
-
-
+            
+            return Results.Ok(address);
         }
 
-        public static IResult UpdateAddress(int AddressId, AdventureWorksLt2019Context context, Address updatedAddress)
+        public static IResult UpdateAddress(int AddressId, AdventureWorksLt2019Context context, Address updateAddress)
         {
             Address? address = context.Addresses.Find(AddressId);
             if (address == null)
             {
-                address = new Address();
+                updateAddress.Rowguid= Guid.NewGuid();
 
-                context.Addresses.Add(address);
+                context.Addresses.Add(updateAddress);
                 context.SaveChanges();
-                return Results.Created("/Address", address);
+                return Results.Created("/Address", updateAddress);
             }
-            else
-            {
-                address.AddressLine1 = updatedAddress.AddressLine1;
-                address.AddressLine2 = updatedAddress.AddressLine2;
-                address.City = updatedAddress.City;
-                address.CountryRegion = updatedAddress.CountryRegion;
-                address.StateProvince = updatedAddress.StateProvince;
-                address.PostalCode = updatedAddress.PostalCode;
-                address.Rowguid = updatedAddress.Rowguid;
-                address.ModifiedDate = updatedAddress.ModifiedDate;
+            
+            address.AddressLine1 = updateAddress.AddressLine1;
+            address.AddressLine2 = updateAddress.AddressLine2;
+            address.City = updateAddress.City;
+            address.CountryRegion = updateAddress.CountryRegion;
+            address.StateProvince = updateAddress.StateProvince;
+            address.PostalCode = updateAddress.PostalCode;
+            address.ModifiedDate = DateTime.Now;
 
-                return Results.Ok(address);
-            }
+            context.SaveChanges();
 
+            return Results.Ok(address);
         }
 
         public static IResult DeleteAddress(int AddressId, AdventureWorksLt2019Context context)
         {
-            Address address = context.Addresses.Find(AddressId);
-
+            Address? address = context.Addresses.Find(AddressId);
 
             if (address == null)
             {
-
                 return Results.NotFound();
             }
-            else
+            
+            IQueryable<CustomerAddress> relatedCustomerAddresses = context.CustomerAddresses.Where(ca => ca.AddressId == AddressId);
+
+            foreach (CustomerAddress customerAddress in relatedCustomerAddresses)
             {
-                IQueryable<CustomerAddress> relatedCustomerAddresses = context.CustomerAddresses.Where(ca => ca.AddressId == AddressId);
-
-                foreach (CustomerAddress customerAddress in relatedCustomerAddresses)
-                {
-                    context.CustomerAddresses.Remove(customerAddress);
-                }
-
-                context.Addresses.Remove(address);
-                context.SaveChanges();
-
-                return Results.Ok(address);
+                context.CustomerAddresses.Remove(customerAddress);
             }
+
+            context.Addresses.Remove(address);
+            context.SaveChanges();
+
+            return Results.Ok(address);
         }
 
         public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
@@ -133,7 +122,5 @@ namespace AdventureWorksApi.Functions
                 IncludeFields = true
             });
         }
-
-
     }
 }

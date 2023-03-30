@@ -17,7 +17,6 @@ namespace AdventureWorksApi.Functions
                 customer.Rowguid = Guid.NewGuid();
             }
 
-
             context.Customers.Add(customer);
             context.SaveChanges();
 
@@ -26,7 +25,6 @@ namespace AdventureWorksApi.Functions
 
         public static IResult ReadCustomer(AdventureWorksLt2019Context context, int? id)
         {
-         
      
             if (id == null)
             {
@@ -37,7 +35,7 @@ namespace AdventureWorksApi.Functions
 
             if (customer == null)
             {
-                return Results.BadRequest();
+                return Results.NotFound();
             }else
             {
                 return Results.Ok(customer);
@@ -51,28 +49,32 @@ namespace AdventureWorksApi.Functions
             Customer? customer = context.Customers.Find(id);
             if (customer == null)
             {
+                updateCustomer.Rowguid = Guid.NewGuid();
                 context.Customers.Add(updateCustomer);
                 context.SaveChanges();
                 return Results.Created("/Customers", updateCustomer);
             }
-            else
-            {
-                customer.Title= updateCustomer.Title;
-                customer.FirstName= updateCustomer.FirstName;
-                customer.MiddleName = updateCustomer.LastName;
-                customer.CompanyName = updateCustomer.CompanyName;
-                customer.SalesPerson = updateCustomer.SalesPerson;
-                customer.EmailAddress = updateCustomer.EmailAddress;
-                customer.Phone = updateCustomer.Phone;
-                customer.Rowguid = updateCustomer.Rowguid;
-                context.SaveChanges();
-                return Results.Ok(customer);
-            }
+            
+            customer.Title= updateCustomer.Title;
+            customer.NameStyle = updateCustomer.NameStyle;
+            customer.FirstName= updateCustomer.FirstName;
+            customer.MiddleName = updateCustomer.MiddleName;
+            customer.LastName = updateCustomer.LastName;
+            customer.Suffix = updateCustomer.Suffix;
+            customer.CompanyName = updateCustomer.CompanyName;
+            customer.SalesPerson = updateCustomer.SalesPerson;
+            customer.EmailAddress = updateCustomer.EmailAddress;
+            customer.Phone = updateCustomer.Phone;
+            
+            context.SaveChanges();
+
+            return Results.Ok(customer);
+            
         }
             
         public static IResult DeleteCustomer(AdventureWorksLt2019Context context, int id)
         {
-            var customer = context.Customers.Find(id);
+            Customer? customer = context.Customers.Find(id);
 
             if (customer == null)
             {
@@ -123,14 +125,11 @@ namespace AdventureWorksApi.Functions
             });
         }
 
-        private static bool CustomerExists(AdventureWorksLt2019Context context, int id)
-        {
-            return context.Customers.Any(e => e.CustomerId == id);
-        }
+        
         public static IResult CustomerAddToAddress(AdventureWorksLt2019Context db, int customerId, int addressId)
         {
-            Customer selectedCustomer = db.Customers.FirstOrDefault(c => c.CustomerId == customerId);
-            Address address = db.Addresses.FirstOrDefault(a => a.AddressId == addressId);
+            Customer? selectedCustomer = db.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            Address? address = db.Addresses.FirstOrDefault(a => a.AddressId == addressId);
 
             if (selectedCustomer == null)
             {
