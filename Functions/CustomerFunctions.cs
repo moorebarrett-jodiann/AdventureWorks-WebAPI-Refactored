@@ -133,6 +133,7 @@ namespace AdventureWorksApi.Functions
             };
 
             context.CustomerAddresses.Add(customerAddress);
+            context.SaveChanges();
 
             var options = new JsonSerializerOptions
             {
