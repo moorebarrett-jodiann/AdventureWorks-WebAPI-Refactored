@@ -24,14 +24,14 @@ namespace AdventureWorksApi.Functions
             return Results.Created($"/Addresses", address);
         }
 
-        public static IResult ReadAddress(AdventureWorksLt2019Context context, int id)
+        public static IResult ReadAddress(AdventureWorksLt2019Context context, int? id)
         {
             if (id == null || id == -1)
             {
                 return Results.Ok(context.Addresses.ToList());
             }
 
-            Address address = context.Addresses.FirstOrDefault(a => a.AddressId == id);
+            Address? address = context.Addresses.FirstOrDefault(a => a.AddressId == id);
 
             if (address == null)
             {
@@ -54,7 +54,7 @@ namespace AdventureWorksApi.Functions
 
                 context.Addresses.Add(address);
                 context.SaveChanges();
-                return Results.Ok("Address is added successful");
+                return Results.Created("/Address", address);
             }
             else
             {
@@ -67,7 +67,7 @@ namespace AdventureWorksApi.Functions
                 address.Rowguid = updatedAddress.Rowguid;
                 address.ModifiedDate = updatedAddress.ModifiedDate;
 
-                return Results.Ok("Address updated successfully");
+                return Results.Ok(address);
             }
 
         }
@@ -80,7 +80,7 @@ namespace AdventureWorksApi.Functions
             if (address == null)
             {
 
-                return Results.BadRequest("Address does not exist.");
+                return Results.NotFound();
             }
             else
             {
@@ -94,7 +94,7 @@ namespace AdventureWorksApi.Functions
                 context.Addresses.Remove(address);
                 context.SaveChanges();
 
-                return Results.Ok("The address is successfully deleted.");
+                return Results.Ok(address);
             }
         }
 
@@ -124,16 +124,14 @@ namespace AdventureWorksApi.Functions
 
             if (address == null)
             {
-                return Results.BadRequest("Address does not exist.");
+                return Results.NotFound();
             };
 
-            string serializer = JsonSerializer.Serialize(address, new JsonSerializerOptions
+            return Results.Json(address, new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve,
                 IncludeFields = true
             });
-
-            return Results.Ok(serializer);
         }
 
 
