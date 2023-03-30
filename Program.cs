@@ -47,7 +47,6 @@ app.MapPut("/Product/Update/{id}", ProductFunctions.UpdateProduct);
 app.MapPost("/Product/Create", ProductFunctions.CreateProduct);
 app.MapGet("/Product/Details/{id}", ProductFunctions.Details);
 
-
 app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
 app.MapDelete("/Order/Delete/{id}", OrderFunctions.DeleteOrder);
 app.MapPut("/Order/Update/{id}", OrderFunctions.UpdateOrder);
