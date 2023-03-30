@@ -1,4 +1,4 @@
-﻿using AdventureWorksApi.Models;
+using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -98,36 +98,82 @@ namespace AdventureWorksApi.Functions
             }
         }
 
-        
+
+        public static IResult CustomerDetails (int CustomerId, AdventureWorksLt2019Context context)
+        {
+            var customer = context.Customers.Where(a => a.CustomerId == CustomerId).Select(b => new
+            {
+                b.CustomerId,
+                b.Title,
+                b.FirstName,
+                b.MiddleName,
+                b.LastName,
+                b.CompanyName,
+                b.SalesPerson,
+                b.EmailAddress,
+                b.Phone,
+                Address = b.CustomerAddresses.Select(c => new
+                {
+                    c.Address.AddressId,
+                    c.Address.AddressLine1,
+                    c.Address.AddressLine2,
+                    c.Address.City,
+                    c.Address.StateProvince,
+                    c.Address.CountryRegion,
+                    c.Address.PostalCode,
+                    c.Address.Rowguid
+                }).ToList()
+            }).FirstOrDefault();
+
+            if (customer == null)
+            {
+                return Results.BadRequest("Customer does not exist.");
+            }
+
+            string serializer = JsonSerializer.Serialize(customer, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                IncludeFields = true
+            });
+
+            return Results.Ok(serializer);
+        }
+
 
         public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
         {
-            Address address = context.Addresses.Include(a => a.CustomerAddresses)
-                                  .ThenInclude(b => b.Customer)
-                                  .FirstOrDefault(c => c.AddressId == AddressId);
+            var address = context.Addresses.Where(a => a.AddressId == AddressId).Select(b => new
+            {
+                b.AddressId,
+                b.AddressLine1,
+                b.AddressLine2,
+                b.City,
+                b.StateProvince,
+                b.CountryRegion,
+                b.PostalCode,
+                b.Rowguid,
+                Customer = b.CustomerAddresses.Select(c => new
+                {
+                    c.Customer.CustomerId,
+                    c.Customer.FirstName,
+                    c.Customer.LastName,
+                    c.Customer.Phone,
+                    c.Customer.EmailAddress,
+                    c.Customer.CompanyName,
+                    c.Customer.Rowguid
+                }).ToList()
+            }).FirstOrDefault();
 
             if (address == null)
             {
                 return Results.BadRequest("Address does not exist.");
-            }
-
-
-            var customer = address.CustomerAddresses.Select(a => a.Customer);
-
-
-            var customerAddress = new
-
-            {
-                Address = address,
-                Customer = customer
             };
 
-            var options = new JsonSerializerOptions
+            string serializer = JsonSerializer.Serialize(address, new JsonSerializerOptions
             {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
-
-            var serializer = JsonSerializer.Serialize(customerAddress, options);
+                ReferenceHandler = ReferenceHandler.Preserve,
+                IncludeFields = true
+            });
 
             return Results.Ok(serializer);
         }
