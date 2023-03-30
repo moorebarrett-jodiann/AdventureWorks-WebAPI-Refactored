@@ -11,8 +11,7 @@ namespace AdventureWorksApi.Functions
             context.SalesOrderHeaders.Add(order);
             context.SaveChanges();
 
-            return Results.Created("/Orders", order);
-
+            return Results.Created($"/Order/Read?int={order.SalesOrderId}", order);
         }
 
         public static IResult ReadOrder(AdventureWorksLt2019Context context, int? id)
@@ -28,11 +27,8 @@ namespace AdventureWorksApi.Functions
             {
                 return Results.NotFound();
             }
-            else
-            {
-                return Results.Ok(order);
-            }
-
+               
+            return Results.Ok(order);
         }
 
         public static IResult UpdateOrder(AdventureWorksLt2019Context context, int id, SalesOrderHeader inputOrder)
@@ -68,10 +64,8 @@ namespace AdventureWorksApi.Functions
             order.Comment= inputOrder.Comment;
             order.ModifiedDate = DateTime.Now;
 
-
             context.SaveChanges();
             return Results.Ok(context.SalesOrderHeaders.Find(order.SalesOrderId));
-
         }
 
         public static IResult DeleteOrder(AdventureWorksLt2019Context context, int id)
