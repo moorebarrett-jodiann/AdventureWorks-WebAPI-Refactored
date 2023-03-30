@@ -1,4 +1,4 @@
-﻿using AdventureWorksApi.Models;
+using AdventureWorksApi.Models;
 using AdventureWorksApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -98,6 +98,7 @@ namespace AdventureWorksApi.Functions
             }
         }
 
+
         public static IResult CustomerDetails (int CustomerId, AdventureWorksLt2019Context context)
         {
             var customer = context.Customers.Where(a => a.CustomerId == CustomerId).Select(b => new
@@ -137,6 +138,7 @@ namespace AdventureWorksApi.Functions
 
             return Results.Ok(serializer);
         }
+
 
         public static IResult AddressDetails(int AddressId, AdventureWorksLt2019Context context)
         {
