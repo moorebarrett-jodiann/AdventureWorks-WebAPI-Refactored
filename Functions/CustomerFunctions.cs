@@ -158,14 +158,12 @@ namespace AdventureWorksApi.Functions
             db.CustomerAddresses.Add(customerAddress);
             db.SaveChanges();
 
-            var options = new JsonSerializerOptions
+            JsonSerializerOptions options = new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve
             };
 
-            var serializer = System.Text.Json.JsonSerializer.Serialize(customerAddress, options);
-
-            return Results.Ok(serializer);
+            return Results.Json(customerAddress, options);
         }
 
     }

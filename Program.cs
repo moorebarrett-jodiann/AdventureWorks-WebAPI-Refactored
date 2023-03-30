@@ -29,8 +29,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/Address/Read", AddressFunctions.ReadAddress);
-app.MapDelete("/Address/Delete/{id}", AddressFunctions.DeleteAddress);
-app.MapPut("/Address/Update/{id}", AddressFunctions.UpdateAddress);
+app.MapDelete("/Address/Delete/{AddressId}", AddressFunctions.DeleteAddress);
+app.MapPut("/Address/Update/{AddressId}", AddressFunctions.UpdateAddress);
 app.MapPost("/Address/Create", AddressFunctions.CreateAddress);
 app.MapGet("/Address/Details/{AddressId}", AddressFunctions.AddressDetails);
 
@@ -39,14 +39,13 @@ app.MapDelete("/Customer/Delete/{id}", CustomerFunctions.DeleteCustomer);
 app.MapPut("/Customer/Update/{id}", CustomerFunctions.UpdateCustomer);
 app.MapPost("/Customer/Create", CustomerFunctions.CreateCustomer);
 app.MapGet("/Customer/Details/{CustomerId}", CustomerFunctions.CustomerDetails);
-app.MapPost("/Customer/AddAddress", CustomerFunctions.CustomerAddToAddress); 
+app.MapPost("/Customer/AddAddress/{customerId}/{addressId}", CustomerFunctions.CustomerAddToAddress); 
 
 app.MapGet("/Product/Read", ProductFunctions.ReadProduct);
 app.MapDelete("/Product/Delete/{id}", ProductFunctions.DeleteProduct);
 app.MapPut("/Product/Update/{id}", ProductFunctions.UpdateProduct);
 app.MapPost("/Product/Create", ProductFunctions.CreateProduct);
 app.MapGet("/Product/Details/{id}", ProductFunctions.Details);
-
 
 app.MapGet("/Order/Read", OrderFunctions.ReadOrder);
 app.MapDelete("/Order/Delete/{id}", OrderFunctions.DeleteOrder);
