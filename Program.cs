@@ -6,6 +6,7 @@ using System.Text;
 using System.Net;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
+using AdventureWorksApi.Repo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AdventureWorksLt2019Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AdventureWorksLt2019Context"))
 );
+
+// inject interfaces and their repositories
+builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
+builder.Services.AddScoped<IAddressRepo, AddressRepo>();
 
 var app = builder.Build();
 
